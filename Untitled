@@ -1,0 +1,49 @@
+
+
+M1 = Matrix([[1, -3, 0],
+            [-3, -2, 10],
+            [0, 10, 7]])
+
+M2 = Matrix([[18, 1 - 2*I, -2],
+            [1 + 2*I, 4, -3*I],
+            [-2, 3*I, 5]])
+
+def check_ldl_decomposition(matrix, name, hermitian=False):
+    print(f"\nАнализ матрицы {name}:")
+    print(f"Исходная матрица {name}:")
+    display(matrix)
+    
+    print(f"Является ли матрица {name} положительно определенной?", matrix.is_positive_definite)
+    
+  
+    
+L, D = matrix.LDLdecomposition(hermitian=hermitian)
+L = simplify(L)
+D = simplify(D)
+
+print(f"\nМатрица L для {name}:")
+display(L)
+
+print(f"\nМатрица D для {name}:")
+display(D)
+
+
+if hermitian:
+    product = simplify(L * D * L.H)
+else:
+    product = simplify(L * D * L.T)
+    
+print(f"\nПроизведение {'L*D*L^H' if hermitian else 'L*D*L^T'} для {name}:")
+display(product)
+diff = simplify(matrix - product)
+is_equal = diff.equals(Matrix.zeros(matrix.rows, matrix.cols))
+print(f"\nПроверка {name} = {'L*D*L^H' if hermitian else 'L*D*L^T'}:", is_equal)
+
+if not is_equal:
+    print("\nРазность между исходной матрицей и произведением:")
+    display(diff)
+
+
+
+check_ldl_decomposition(M1, "M1", hermitian=False)
+check_ldl_decomposition(M2, "M2", hermitian=True)
